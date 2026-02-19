@@ -36,7 +36,7 @@ export default function NewsList({ newsItems }: NewsListProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: index * 0.05 }}
-          className="group flex flex-col bg-white border border-zinc-200 p-6 hover:border-black transition-all relative cursor-pointer"
+          className="group flex flex-col bg-white border border-zinc-200 p-6 hover:border-black transition-all relative"
         >
           <div className="flex items-center gap-2 text-zinc-400 text-xs mb-4">
             <Calendar size={14} />
@@ -44,7 +44,14 @@ export default function NewsList({ newsItems }: NewsListProps) {
           </div>
           
           <h3 className="text-xl font-bold mb-4 leading-tight group-hover:underline decoration-1 underline-offset-4">
-            {item.title}
+            <a 
+              href={item.link} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="z-20 relative"
+            >
+              {item.title}
+            </a>
           </h3>
           
           <p className="text-zinc-600 text-sm mb-8 line-clamp-3 leading-relaxed">
@@ -52,22 +59,27 @@ export default function NewsList({ newsItems }: NewsListProps) {
           </p>
           
           <div className="mt-auto flex justify-end">
-            <span 
-              className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-zinc-400 group-hover:text-black transition-colors"
+            <a 
+              href={item.link} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-zinc-400 group-hover:text-black transition-colors z-20 relative"
             >
               Read Article
               <ExternalLink size={14} />
-            </span>
+            </a>
           </div>
 
-          {/* Invisible Overlay Link for Accessibility and Ease of Use */}
+          {/* This overlay ensures the whole card is clickable but stays behind the actual links for accessibility */}
           <a 
             href={item.link} 
             target="_blank" 
-            rel="noopener noreferrer"
+            rel="noopener noreferrer" 
             className="absolute inset-0 z-10"
-            aria-label={`Read more about ${item.title}`}
-          />
+            aria-hidden="true"
+          >
+            <span className="sr-only">Read {item.title}</span>
+          </a>
         </motion.article>
       ))}
     </div>

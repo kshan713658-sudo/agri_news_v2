@@ -7,21 +7,27 @@ export const revalidate = 3600; // 1시간마다 캐시 갱신
 async function getNews() {
   const parser = new Parser();
   const RSS_URL = 'http://www.newsfarm.co.kr/rss/allArticle.xml';
-  const BASE_URL = 'http://www.newsfarm.co.kr';
+  const BASE_URL = 'https://www.newsfarm.co.kr'; // Force HTTPS for external links
   
   try {
     const feed = await parser.parseURL(RSS_URL);
     return feed.items.map(item => {
       let link = item.link?.trim() || '#';
-      if (link !== '#' && !link.startsWith('http')) {
-        link = link.startsWith('/') ? `${BASE_URL}${link}` : `${BASE_URL}/${link}`;
+      
+      // Handle relative links and force https
+      if (link !== '#') {
+        if (link.startsWith('http://')) {
+          link = link.replace('http://', 'https://');
+        } else if (!link.startsWith('http')) {
+          link = link.startsWith('/') ? `${BASE_URL}${link}` : `${BASE_URL}/${link}`;
+        }
       }
       
       return {
         title: item.title?.trim() || '제목 없음',
         link: link,
         pubDate: item.pubDate || new Date().toISOString(),
-        contentSnippet: (item.contentSnippet || '').substring(0, 200),
+        contentSnippet: (item.contentSnippet || '').substring(0, 200).replace(/<[^>]*>?/gm, ''), // Remove HTML tags
       };
     });
   } catch (error) {
