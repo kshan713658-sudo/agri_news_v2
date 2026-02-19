@@ -43,12 +43,13 @@ export default function NewsList({ newsItems }: NewsListProps) {
             <span>{formatDate(item.pubDate)}</span>
           </div>
           
-          <h3 className="text-xl font-bold mb-4 leading-tight group-hover:underline decoration-1 underline-offset-4">
+          <h3 className="text-xl font-bold mb-4 leading-tight">
             <a 
               href={item.link} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="z-20 relative"
+              referrerPolicy="no-referrer"
+              className="hover:underline decoration-1 underline-offset-4"
             >
               {item.title}
             </a>
@@ -63,23 +64,13 @@ export default function NewsList({ newsItems }: NewsListProps) {
               href={item.link} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-zinc-400 group-hover:text-black transition-colors z-20 relative"
+              referrerPolicy="no-referrer"
+              className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-zinc-400 group-hover:text-black transition-colors"
             >
               Read Article
               <ExternalLink size={14} />
             </a>
           </div>
-
-          {/* This overlay ensures the whole card is clickable but stays behind the actual links for accessibility */}
-          <a 
-            href={item.link} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="absolute inset-0 z-10"
-            aria-hidden="true"
-          >
-            <span className="sr-only">Read {item.title}</span>
-          </a>
         </motion.article>
       ))}
     </div>

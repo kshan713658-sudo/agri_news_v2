@@ -7,20 +7,16 @@ export const revalidate = 3600; // 1시간마다 캐시 갱신
 async function getNews() {
   const parser = new Parser();
   const RSS_URL = 'http://www.newsfarm.co.kr/rss/allArticle.xml';
-  const BASE_URL = 'https://www.newsfarm.co.kr'; // Force HTTPS for external links
+  const BASE_URL = 'http://www.newsfarm.co.kr';
   
   try {
     const feed = await parser.parseURL(RSS_URL);
     return feed.items.map(item => {
       let link = item.link?.trim() || '#';
       
-      // Handle relative links and force https
-      if (link !== '#') {
-        if (link.startsWith('http://')) {
-          link = link.replace('http://', 'https://');
-        } else if (!link.startsWith('http')) {
-          link = link.startsWith('/') ? `${BASE_URL}${link}` : `${BASE_URL}/${link}`;
-        }
+      // Handle relative links. Do NOT force HTTPS as the source site may not support it.
+      if (link !== '#' && !link.startsWith('http')) {
+        link = link.startsWith('/') ? `${BASE_URL}${link}` : `${BASE_URL}/${link}`;
       }
       
       return {
