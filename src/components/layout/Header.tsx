@@ -13,6 +13,7 @@ export default function Header() {
         
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
           <Link href="/" className="hover:text-zinc-500 transition-colors">Latest</Link>
+          <Link href="/news" className="hover:text-zinc-500 transition-colors">News</Link>
           <Link href="/" className="hover:text-zinc-500 transition-colors">Technology</Link>
           <Link href="/" className="hover:text-zinc-500 transition-colors">Market</Link>
           <Link href="/" className="hover:text-zinc-500 transition-colors">Science</Link>
