@@ -18,6 +18,10 @@ async function getNews() {
       if (link !== '#' && !link.startsWith('http')) {
         link = link.startsWith('/') ? `${BASE_URL}${link}` : `${BASE_URL}/${link}`;
       }
+      // Ensure link stays on http for this source
+      if (link.startsWith('https://www.newsfarm.co.kr')) {
+        link = link.replace('https://', 'http://');
+      }
       
       return {
         title: item.title?.trim() || '제목 없음',

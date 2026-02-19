@@ -15,6 +15,19 @@ interface NewsListProps {
 }
 
 export default function NewsList({ newsItems }: NewsListProps) {
+  const normalizeUrl = (url: string) => {
+    const trimmed = (url || '').trim();
+    if (!trimmed || trimmed === '#') return '#';
+    if (trimmed.startsWith('https://www.newsfarm.co.kr')) return trimmed.replace('https://', 'http://');
+    return trimmed;
+  };
+
+  const openArticle = (rawUrl: string) => {
+    const url = normalizeUrl(rawUrl);
+    if (url === '#') return;
+    window.location.assign(url);
+  };
+
   const formatDate = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
@@ -36,7 +49,16 @@ export default function NewsList({ newsItems }: NewsListProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: index * 0.05 }}
-          className="group flex flex-col bg-white border border-zinc-200 p-6 hover:border-black transition-all relative"
+          className="group flex flex-col bg-white border border-zinc-200 p-6 hover:border-black transition-all relative cursor-pointer"
+          role="link"
+          tabIndex={0}
+          onClick={() => openArticle(item.link)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openArticle(item.link);
+            }
+          }}
         >
           <div className="flex items-center gap-2 text-zinc-400 text-xs mb-4">
             <Calendar size={14} />
@@ -45,11 +67,12 @@ export default function NewsList({ newsItems }: NewsListProps) {
           
           <h3 className="text-xl font-bold mb-4 leading-tight">
             <a 
-              href={item.link} 
+              href={normalizeUrl(item.link)} 
               target="_blank" 
               rel="noopener noreferrer"
               referrerPolicy="no-referrer"
               className="hover:underline decoration-1 underline-offset-4"
+              onClick={(e) => e.stopPropagation()}
             >
               {item.title}
             </a>
@@ -61,11 +84,12 @@ export default function NewsList({ newsItems }: NewsListProps) {
           
           <div className="mt-auto flex justify-end">
             <a 
-              href={item.link} 
+              href={normalizeUrl(item.link)} 
               target="_blank" 
               rel="noopener noreferrer"
               referrerPolicy="no-referrer"
               className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-zinc-400 group-hover:text-black transition-colors"
+              onClick={(e) => e.stopPropagation()}
             >
               Read Article
               <ExternalLink size={14} />
