@@ -36,8 +36,7 @@ export default function NewsList({ newsItems }: NewsListProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: index * 0.05 }}
-          className="group flex flex-col bg-white border border-zinc-200 p-6 hover:border-black transition-all cursor-pointer relative"
-          onClick={() => item.link && window.open(item.link, '_blank')}
+          className="group flex flex-col bg-white border border-zinc-200 p-6 hover:border-black transition-all relative cursor-pointer"
         >
           <div className="flex items-center gap-2 text-zinc-400 text-xs mb-4">
             <Calendar size={14} />
@@ -45,14 +44,7 @@ export default function NewsList({ newsItems }: NewsListProps) {
           </div>
           
           <h3 className="text-xl font-bold mb-4 leading-tight group-hover:underline decoration-1 underline-offset-4">
-            <a 
-              href={item.link} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {item.title}
-            </a>
+            {item.title}
           </h3>
           
           <p className="text-zinc-600 text-sm mb-8 line-clamp-3 leading-relaxed">
@@ -67,6 +59,15 @@ export default function NewsList({ newsItems }: NewsListProps) {
               <ExternalLink size={14} />
             </span>
           </div>
+
+          {/* Invisible Overlay Link for Accessibility and Ease of Use */}
+          <a 
+            href={item.link} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="absolute inset-0 z-10"
+            aria-label={`Read more about ${item.title}`}
+          />
         </motion.article>
       ))}
     </div>

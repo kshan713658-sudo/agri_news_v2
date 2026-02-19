@@ -7,15 +7,23 @@ export const revalidate = 3600; // 1시간마다 캐시 갱신
 async function getNews() {
   const parser = new Parser();
   const RSS_URL = 'http://www.newsfarm.co.kr/rss/allArticle.xml';
+  const BASE_URL = 'http://www.newsfarm.co.kr';
   
   try {
     const feed = await parser.parseURL(RSS_URL);
-    return feed.items.map(item => ({
-      title: item.title || '제목 없음',
-      link: item.link || '#',
-      pubDate: item.pubDate || new Date().toISOString(),
-      contentSnippet: item.contentSnippet || '',
-    }));
+    return feed.items.map(item => {
+      let link = item.link?.trim() || '#';
+      if (link !== '#' && !link.startsWith('http')) {
+        link = link.startsWith('/') ? `${BASE_URL}${link}` : `${BASE_URL}/${link}`;
+      }
+      
+      return {
+        title: item.title?.trim() || '제목 없음',
+        link: link,
+        pubDate: item.pubDate || new Date().toISOString(),
+        contentSnippet: (item.contentSnippet || '').substring(0, 200),
+      };
+    });
   } catch (error) {
     console.error('Failed to fetch RSS:', error);
     return [];
